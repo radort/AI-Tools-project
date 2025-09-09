@@ -52,12 +52,15 @@ docker compose ps
 
 echo ""
 echo "🌐 Access URLs:"
+# Note: If URLs below show wrong ports, check actual ports with: docker compose ps
 FRONTEND_PORT=$(grep "FRONTEND_PORT" docker-compose.yml | head -1 | sed 's/.*"\([0-9]*\):.*/\1/')
 BACKEND_PORT=$(grep "BACKEND_PORT" docker-compose.yml | head -1 | sed 's/.*"\([0-9]*\):.*/\1/')
 
-echo "  Frontend (Next.js): http://localhost:${FRONTEND_PORT:-3000}"
-echo "  Backend (Laravel): http://localhost:${BACKEND_PORT:-8000}"
-echo "  API Status: http://localhost:${BACKEND_PORT:-8000}/api/status"
+echo "  Frontend (Next.js): http://localhost:${FRONTEND_PORT:-8200}"
+echo "  Backend (Laravel): http://localhost:${BACKEND_PORT:-8201}"
+echo "  API Status: http://localhost:${BACKEND_PORT:-8201}/api/status"
+echo ""
+echo "💡 To verify actual ports, run: docker compose ps"
 echo ""
 echo "📋 Useful commands:"
 echo "  docker compose logs -f          # View logs"
