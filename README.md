@@ -190,9 +190,9 @@ docker compose exec php_fpm php artisan db:seed
 
 | Action | Guest | User | Admin |
 |--------|-------|------|-------|
-| View approved tools | ✅ | ✅ | ✅ |
-| View comments/ratings | ✅ | ✅ | ✅ |
-| Create account | ✅ | ✅ | ✅ |
+| View approved tools | ❌ | ✅ | ✅ |
+| View comments/ratings | ❌ | ✅ | ✅ |
+| Create account | ❌ | ✅ | ✅ |
 | Submit tools | ❌ | ✅ | ✅ |
 | Rate tools | ❌ | ✅ | ✅ |
 | Comment on tools | ❌ | ✅ | ✅ |
