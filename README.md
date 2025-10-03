@@ -526,7 +526,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Documentation**: Check this README and inline documentation
 - **Issues**: Create an issue on GitHub
 - **Discussions**: Use GitHub Discussions for questions
-- **Email**: [support@example.com](mailto:support@example.com)
+- **Email**: [radoslavrt@parketilazur.com](mailto:radoslavrt@parketilazur.com)
 
 ## 🔄 Changelog
 
@@ -540,5 +540,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-**Generated with AI Tools Platform Starter Kit**
+**AI Tools Platform Starter Kit**
 **Last Updated**: October 2025
