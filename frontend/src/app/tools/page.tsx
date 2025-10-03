@@ -38,16 +38,10 @@ export default function ToolsPage() {
         console.error('Tools page: failed to parse user data:', e)
         localStorage.removeItem('user')
         localStorage.removeItem('token')
-        window.location.href = '/login'
-        return
+        // Don't redirect - just continue as anonymous user
       }
-    } else {
-      // No valid user data, redirect to login
-      console.log('Tools page: no valid auth data, redirecting to login')
-      window.location.href = '/login'
-      return
     }
-
+    // Allow anonymous access to view tools
     setUserLoading(false)
   }, [])
 
@@ -73,18 +67,6 @@ export default function ToolsPage() {
     setError('')
 
     try {
-      // Double-check that we have valid auth before making API calls
-      const token = localStorage.getItem('token')
-      const userData = localStorage.getItem('user')
-
-      if (!token || !userData) {
-        console.log('No token or user data found, redirecting to login')
-        localStorage.removeItem('token')
-        localStorage.removeItem('user')
-        window.location.href = '/login'
-        return
-      }
-
       const params: any = { page: currentPage }
       if (selectedCategory) params.category = parseInt(selectedCategory)
       if (selectedDifficulty) params.difficulty = selectedDifficulty
@@ -96,15 +78,6 @@ export default function ToolsPage() {
       setTotalItems(response.meta.total)
     } catch (error) {
       console.error('API Error:', error)
-
-      // If we get an Unauthorized error, clear auth and redirect to login
-      if (error instanceof Error && error.message === 'Unauthorized') {
-        localStorage.removeItem('token')
-        localStorage.removeItem('user')
-        window.location.href = '/login'
-        return
-      }
-
       setError(error instanceof Error ? error.message : 'Failed to load tools')
     } finally {
       setLoading(false)
@@ -138,18 +111,7 @@ export default function ToolsPage() {
     )
   }
 
-  if (!user) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Please log in to view tools</h1>
-          <Link href="/login" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-            Login
-          </Link>
-        </div>
-      </div>
-    )
-  }
+  // Remove the authentication requirement - allow anonymous access
 
   const handleLogout = () => {
     localStorage.removeItem('token')
@@ -168,7 +130,7 @@ export default function ToolsPage() {
               <h1 className="text-xl font-bold text-gray-900">AI Tools Hub</h1>
             </div>
 
-            {user && (
+            {user ? (
               <div className="flex items-center space-x-4">
                 <div className="text-sm text-gray-700">
                   <span className="font-medium">{user.name}</span>
@@ -186,6 +148,15 @@ export default function ToolsPage() {
                 >
                   Logout
                 </button>
+              </div>
+            ) : (
+              <div className="flex items-center space-x-4">
+                <Link
+                  href="/login"
+                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded text-sm"
+                >
+                  Login
+                </Link>
               </div>
             )}
           </div>

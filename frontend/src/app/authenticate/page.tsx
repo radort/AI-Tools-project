@@ -21,6 +21,7 @@ export default function AuthenticatePage() {
     }
 
     // Try to authenticate with just the token first (no 2FA)
+    // This will work for users without 2FA enabled
     authenticateUser('')
   }, [token, router])
 

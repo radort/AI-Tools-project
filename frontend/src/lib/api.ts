@@ -186,9 +186,9 @@ class ApiClient {
     return this.request<User>('/user')
   }
 
-  // Auth API
+  // Auth API - simplified approach
   async login(email: string, password: string) {
-    return this.request<{ user?: User; token?: string; message?: string }>('/login', {
+    return this.request<{ user?: User; token?: string; intermediate_token?: string; requires_intermediate_auth?: boolean }>('/login', {
       method: 'POST',
       body: JSON.stringify({ email, password }),
     })

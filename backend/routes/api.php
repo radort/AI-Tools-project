@@ -9,11 +9,16 @@ use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\AdminController;
 use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\RatingController;
+use App\Http\Controllers\SimpleAuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Hash;
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/authenticate', [TwoFactorAuthController::class, 'authenticateUser']);
+Route::post('/simple-login', [SimpleAuthController::class, 'login']);
+
+// Simple login endpoint using controller
 
 // Test route
 Route::get('/test', function () {
@@ -33,6 +38,10 @@ Route::post('/test-login', function (Illuminate\Http\Request $request) {
 // Public routes (no authentication required)
 Route::get('/categories', [CategoryController::class, 'index']);
 
+// Public tools (approved tools for anonymous, all for authenticated users)
+Route::get('/tools', [ToolController::class, 'index']);
+Route::get('/tools/{tool}', [ToolController::class, 'show']);
+
 // Public tool comments and ratings (read-only)
 Route::get('tools/{tool}/comments', [CommentController::class, 'index']);
 Route::get('tools/{tool}/comments/{comment}', [CommentController::class, 'show']);
@@ -51,8 +60,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/recovery-codes', [TwoFactorSetupController::class, 'generateRecoveryCodes']);
     });
 
-    // Tools
-    Route::apiResource('tools', ToolController::class);
+    // Tools (authenticated operations only - create, update, delete)
+    Route::post('/tools', [ToolController::class, 'store']);
+    Route::put('/tools/{tool}', [ToolController::class, 'update']);
+    Route::patch('/tools/{tool}', [ToolController::class, 'update']);
+    Route::delete('/tools/{tool}', [ToolController::class, 'destroy']);
 
     // Tool Comments (authenticated write operations)
     Route::post('tools/{tool}/comments', [CommentController::class, 'store']);

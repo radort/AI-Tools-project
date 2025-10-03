@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Cache;
 
 class ToolController extends Controller
 {
+    // Removed indexPublic and showPublic methods - using the main index/show with conditional logic
+
     public function index(Request $request): JsonResponse
     {
         $query = Tool::with(['categories', 'roles', 'creator']);
@@ -45,10 +47,15 @@ class ToolController extends Controller
 
         // Show approved tools for everyone, and non-approved tools only to their creators
         $user = $request->user();
-        $query->where(function($q) use ($user) {
-            $q->where('status', 'approved')
-              ->orWhere('created_by', $user->id);
-        });
+        if ($user) {
+            $query->where(function($q) use ($user) {
+                $q->where('status', 'approved')
+                  ->orWhere('created_by', $user->id);
+            });
+        } else {
+            // Anonymous users can only see approved tools
+            $query->where('status', 'approved');
+        }
 
         // Order by creation date (newest first)
         $query->orderBy('created_at', 'desc');
@@ -66,8 +73,19 @@ class ToolController extends Controller
         ]);
     }
 
-    public function show(Tool $tool): JsonResponse
+    public function show(Request $request, Tool $tool): JsonResponse
     {
+        $user = $request->user();
+
+        // Check if user can view this tool
+        if (!$user && $tool->status !== 'approved') {
+            return response()->json(['error' => 'Tool not found'], 404);
+        }
+
+        if ($user && $tool->status !== 'approved' && $tool->created_by !== $user->id) {
+            return response()->json(['error' => 'Tool not found'], 404);
+        }
+
         $tool->load(['categories', 'roles', 'creator']);
 
         return response()->json([
